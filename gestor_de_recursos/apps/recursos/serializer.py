@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from apps.recursos.models import Recurso
-class RecursoSerializer(serializers.ModelSerializer):  # Para serializar un modelo completo
+class RecursoSerializer(serializers.ModelSerializer): 
     class Meta:
         model = Recurso
-        fields = ['nombre', 'descripcion', 'tipo', 'cantidad_total', 'cantidad_disponible']
+        fields = '__all__'  # Serializa todos los campos del modelos

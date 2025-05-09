@@ -1,31 +1,27 @@
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers, permissions
-from apps.recursos.views import RecursoViewSet
-from apps.peticiones.views import PeticionViewSet
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-
 router = routers.DefaultRouter()
-router.register(r'recursos', RecursoViewSet)
-router.register(r'peticiones', PeticionViewSet)
+
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Gestor de Recursos API",
+      title="Esta es la API de gestor de Recursos, donde podras gestionar tus recursos sin necesidad de acceder a un aplicativo.",
       default_version='v1',
-      description="Documentación de las APIs del Gestor de Recursos",
-      contact=openapi.Contact(email="contact@gestor.local"),
+      contact=openapi.Contact(email="guillentcarlos@gmail.com"),
    ),
    public=True,
    permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include(router.urls)),
-    path('api/', include('rest_framework.urls', namespace='rest_framework')), 
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+   #  path('api/', include('rest_framework.urls', namespace='rest_framework')), 
    #  path('v1/', include('router.urls')),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-]
+   path('admin/', admin.site.urls),
+   path('recursos/', include('apps.recursos.urls')),
+   path('peticiones/', include('apps.peticiones.urls')),
+   path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+   path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+] 

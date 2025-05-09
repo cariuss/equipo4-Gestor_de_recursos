@@ -1,6 +1,7 @@
 from django.db import models
 
 class Recurso(models.Model):
+    id = models.CharField(primary_key=True, max_length=50, verbose_name="ID del Recurso")
     nombre = models.CharField(max_length=255, verbose_name="Nombre del Recurso")
     descripcion = models.TextField(blank=True, null=True, verbose_name="Descripción")
     tipo = models.CharField(max_length=100, verbose_name="Tipo de Recurso")
