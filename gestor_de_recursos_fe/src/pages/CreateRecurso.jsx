@@ -8,6 +8,7 @@ export const CreateRecurso = () => {
         const data = Object.fromEntries(formData.entries());
         try {
             const response = await createRecurso(data);
+            console.log("Recurso creado:", response);
         } catch (error) {
             console.error("Error al crear el recurso:", error);
             alert("Hubo un error al crear el recurso");

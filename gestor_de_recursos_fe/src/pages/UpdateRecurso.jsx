@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import {updateRecurso} from "../services/recursos.service";
+export const UpdateRecurso = ({ recursoData, onSubmit }) => {
 
-export const UpdateRecurso = ({ recursoData, onSubmit, onCancel }) => {
     const [updatedRecursoData, setUpdatedRecursoData] = useState({
         id: recursoData.id || "",
         nombre: recursoData.nombre || "",
@@ -12,15 +13,28 @@ export const UpdateRecurso = ({ recursoData, onSubmit, onCancel }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        onSubmit(updatedRecursoData);
+        try {
+            console.log("Updated Recurso Data:", updatedRecursoData);
+            const response = await updateRecurso(updatedRecursoData.id,updatedRecursoData);
+            if (response.status != 200) {
+                alert("Recurso actualizado correctamente");
+                onSubmit();
+            } else {
+                alert("Error al actualizar el recurso");
+            }
+        } catch (error) {
+            console.error("Error updating recurso:", error);
+        }
     };
 
-    const handleChange = (e) => {
+    const handleChange = async (e) => {
         setUpdatedRecursoData({
             ...updatedRecursoData,
             [e.target.name]: e.target.value,
         });
     };
+
+
 
     return (
         <div className="flex items-center justify-center">
@@ -63,7 +77,8 @@ export const UpdateRecurso = ({ recursoData, onSubmit, onCancel }) => {
                 <button
                     type="submit"
                     className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                >
+                    onClick={handleSubmit}
+               >
                     Actualizar Recurso
                 </button>
             </form>

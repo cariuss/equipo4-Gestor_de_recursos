@@ -14,12 +14,31 @@ export const ListRecursos = () => {
     setRecursos(recursos);
   };
 
-  const handleDelete = async (id) => {
-    if (window.confirm("¿Estás seguro de que deseas eliminar este recurso?")) {
-      await deleteRecurso(id);
-      fetch(); // Refrescar la lista después de eliminar
+const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+const [recursoToDeleteId, setRecursoToDeleteId] = useState(null);
+
+const openDeleteModal = (id) => {
+    setRecursoToDeleteId(id);
+    setIsDeleteModalOpen(true);
+};
+
+const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setRecursoToDeleteId(null);
+};
+
+const handleDelete = async () => {
+   try {
+        if(recursoToDeleteId){
+            await deleteRecurso(recursoToDeleteId);
+            setRecursos(recursos.filter((recurso) => recurso.id !== recursoToDeleteId));
+            closeDeleteModal();
+            fetch();
+        }
+    } catch (error) {
+        console.error("Error deleting recurso:", error);
     }
-  };
+};
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
@@ -100,16 +119,13 @@ return (
                             <td className="border border-gray-300 px-4 py-2">
                                 <div className="flex space-x-2">
                                     <button
-                                        onClick={() => {
-                                            setSelectedRecursoId(recurso.id);
-                                            setIsModalOpen(true);
-                                        }}
+                                        onClick={() => openModal(recurso.id)}
                                         className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
                                     >
                                         Editar
                                     </button>
                                     <button
-                                        onClick={() => handleDelete(recurso.id)}
+                                        onClick={() => openDeleteModal(recurso.id)}
                                         className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                                     >
                                         Eliminar
@@ -150,17 +166,25 @@ return (
             <Modal
                 isOpen={isModalOpen}
                 onClose={closeModal}
-                title="Editar Recurso"
-                text="Aquí puedes editar el recurso."
-                icon="info"
-                confirmButtonText="Guardar"
+                title= {false}
+                text={false}
+                icon={false}
                 children={<UpdateRecurso
                     recursoData={recursos.find(recurso => recurso.id === selectedRecursoId)}
                     onSubmit={fetch}
-                    onCancel={closeModal}
-                />}
+                    onCancel={closeModal}/>}
             />
         )}
+        <Modal
+            isOpen={isDeleteModalOpen}
+            onClose={closeDeleteModal}
+            title="Confirmar Eliminación"
+            text="¿Estás seguro de que quieres eliminar este recurso?"
+            icon="warning"
+            confirmButtonText="Eliminar"
+            cancelButtonText="Cancelar"
+            onConfirm={handleDelete}
+        />
     </div>
 );
 };

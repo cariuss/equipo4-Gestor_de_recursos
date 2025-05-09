@@ -4,21 +4,29 @@ import withReactContent from 'sweetalert2-react-content';
 
 const MySwal = withReactContent(Swal);
 
-export const Modal = ({ isOpen, onClose, children }) => {
+export const Modal = ({ isOpen, onClose, title, text, icon, confirmButtonText, children, onConfirm }) => {
     useEffect(() => {
         if (isOpen) {
             MySwal.fire({
-                showConfirmButton: false,
-                showCloseButton: true,
+                title: title || '',
+                text: text || '',
+                icon: icon || '',
+                confirmButtonText: confirmButtonText || 'OK',
+                showCancelButton: onConfirm ? true : false,
                 html: children ? <div>{children}</div> : null,
                 didClose: () => {
                     if (onClose) {
                         onClose();
                     }
+                },
+                preConfirm: () => {
+                    if (onConfirm) {
+                       return onConfirm();
+                    }
                 }
             });
         }
-    }, [isOpen, onClose, children]);
+    }, [isOpen, onClose, title, text, icon, confirmButtonText, children, onConfirm]);
 
     return null;
 };
