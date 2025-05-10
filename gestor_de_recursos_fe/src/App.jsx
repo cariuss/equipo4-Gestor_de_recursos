@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import {CreateRecurso} from "./pages/CreateRecurso";
 import {ListRecursos} from "./pages/ListRecursos";
+import {ListUsuario} from "./pages/usuarios/ListUsuario";
+import UsuarioLogin from "./pages/usuarios/UsuarioLogin";
 import "./App.css";
-import UpdateRecurso from "./pages/UpdateRecurso";
 function App() {
 
 
@@ -10,9 +10,9 @@ function App() {
     
     <BrowserRouter>
       <Routes>
-        <Route path="/crear_recurso" element={<CreateRecurso/>} />
         <Route path="/list_recurso" element={<ListRecursos/>} />
-        {/* <Route path="/update_recurso" element={<UpdateRecurso/>} /> */}
+        <Route path="/list_usuarios" element={<ListUsuario/>} />
+        <Route path="/login" element={<UsuarioLogin/>} />
       </Routes>
   </BrowserRouter>
     
