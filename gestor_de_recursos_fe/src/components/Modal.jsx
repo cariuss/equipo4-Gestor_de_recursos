@@ -11,11 +11,9 @@ export const Modal = ({ isOpen, onClose, title, text, icon, confirmButtonText, c
                 title: title || '',
                 text: text || '',
                 icon: icon || '',
-                confirmButtonText: confirmButtonText || null,
+                confirmButtonText: confirmButtonText || 'OK',
                 showCancelButton: onConfirm ? true : false,
-                html: children ? <div>{children}</div> : <div className="flex items-center justify-center min-h-[200px] bg-gray-100 rounded-lg shadow-md">
-                <span className="text-gray-500 text-lg font-medium">Contenido no disponible</span>
-              </div>,
+                html: children ? <div>{children}</div> : null,
                 didClose: () => {
                     if (onClose) {
                         onClose();

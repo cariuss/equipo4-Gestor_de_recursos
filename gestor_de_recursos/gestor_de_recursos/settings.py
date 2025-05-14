@@ -27,25 +27,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-       'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly' #permisos para la api
         
     ]
 }
-
-from datetime import timedelta
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'AUTH_HEADER_TYPES': ('Bearer',),
-}
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -55,11 +45,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.recursos', 
     'apps.peticiones',
-    'apps.usuarios',
     'rest_framework',
     'drf_yasg',
     'rest_framework_simplejwt',
-     'corsheaders' 
+     'corsheaders',     
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
