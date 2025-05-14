@@ -5,18 +5,17 @@ const UsuarioLogin = () => {
   const [contraseña, setContraseña] = useState("");
 
   const handleLogin = async (e) => {
-    e.preventDefault(correo,contraseña);
-    console.log()
-    const res = await fetch("http://localhost:8000/usuarios/api/v1/login/", {
+    e.preventDefault(correo, contraseña);
+    const res = await fetch("http://localhost:8000/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ correo, contraseña }),
     });
     const data = await res.json();
     if (res.ok) {
-       localStorage.setItem("token", data.access);
-      console.log("Login correcto", data.usuario);
+      localStorage.setItem("token", data.access);
       alert("Login exitoso");
+      
     } else {
       alert(data.detail || "Error al iniciar sesión");
     }
@@ -33,7 +32,10 @@ const UsuarioLogin = () => {
         </h2>
 
         <div className="mb-4">
-          <label htmlFor="correo" className="block text-gray-700 font-medium mb-1">
+          <label
+            htmlFor="correo"
+            className="block text-gray-700 font-medium mb-1"
+          >
             Correo electrónico
           </label>
           <input
@@ -49,7 +51,10 @@ const UsuarioLogin = () => {
         </div>
 
         <div className="mb-6">
-          <label htmlFor="contraseña" className="block text-gray-700 font-medium mb-1">
+          <label
+            htmlFor="contraseña"
+            className="block text-gray-700 font-medium mb-1"
+          >
             Contraseña
           </label>
           <input

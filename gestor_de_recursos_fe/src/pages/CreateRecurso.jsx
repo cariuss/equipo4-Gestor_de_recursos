@@ -16,7 +16,7 @@ export const CreateRecurso = () => {
     };
 return (
     <div
-        className="flex items-center justify-center min-h-screen bg-gray-100"
+        className="flex items-center justify-center bg-gray-100"
     >
         <form
             className="p-6 bg-white shadow-lg rounded-lg w-full max-w-lg"

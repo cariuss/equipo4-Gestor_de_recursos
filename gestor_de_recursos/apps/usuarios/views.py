@@ -14,17 +14,16 @@ class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
     lookup_field = 'id'  
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
 
 
 
 class LoginView(APIView):
      # Permitir acceso sin autenticación previa
-
+    permission_classes = [AllowAny] 
     def post(self, request):
         correo = request.data.get('correo')
         contraseña = request.data.get('contraseña')
-        
         # Aquí es donde validarías las credenciales, si usas el modelo Usuario
         try:
             user = Usuario.objects.get(correo=correo)
@@ -46,4 +45,3 @@ class LoginView(APIView):
         except Usuario.DoesNotExist:
             return Response({"detail": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
         
-    permission_classes = [AllowAny] 
