@@ -1,35 +1,44 @@
+# apps/usuarios/models.py
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
 
-class Usuario(models.Model):
-    id = models.IntegerField(primary_key=True,  max_length=50, verbose_name='ID')
-    nombre = models.CharField(max_length=255, verbose_name="Nombre del Recurso")
-    correo = models.EmailField(max_length=100, verbose_name='Correo Electrónico')
-    numero = models.CharField(max_length=20, verbose_name='Número de Teléfono')
-    direccion = models.CharField(max_length=200, verbose_name='Dirección')
-    contraseña = models.CharField(max_length=100, verbose_name='Contraseña')
+
+class UsuarioManager(BaseUserManager):
+    def create_user(self, correo, nombre, contraseña=None, **extra_fields):
+        if not correo:
+            raise ValueError('El correo electrónico es obligatorio')
+        correo = self.normalize_email(correo)
+        user = self.model(correo=correo, nombre=nombre, **extra_fields)
+        user.set_password(contraseña)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, correo, nombre, contraseña=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        return self.create_user(correo, nombre, contraseña, **extra_fields)
+
+
+class Usuario(AbstractBaseUser, PermissionsMixin):
+    id = models.IntegerField(primary_key=True)
+    nombre = models.CharField(max_length=255)
+    correo = models.EmailField(unique=True, max_length=100)
+    numero = models.CharField(max_length=20)
+    direccion = models.CharField(max_length=200)
     ROL_CHOICES = [
         ('administrador', 'Administrador'),
         ('usuario_estandar', 'Usuario Estándar'),
         ('supervisor', 'Supervisor'),
     ]
-    rol = models.CharField(max_length=50, choices=ROL_CHOICES, default='usuario_estandar', verbose_name='Rol')
-    rol_inicial = None
+    rol = models.CharField(max_length=50, choices=ROL_CHOICES, default='usuario_estandar')
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.rol_inicial = self.rol
+    is_active = models.BooleanField(default=True)
+    is_staff = models.BooleanField(default=False)
 
-    def save(self, *args, **kwargs):
-        if self._state.adding:
-            # If it's a new object being created, the role can be set
-            pass  # Allow setting the role during creation
-        else:
-            # If it's an existing object, prevent role modification
-            if self.rol != self.rol_inicial:
-                raise ValueError("No se permite modificar el rol después de la creación.")
-        super().save(*args, **kwargs)
-        self.rol_inicial = self.rol
+    objects = UsuarioManager()
+
+    USERNAME_FIELD = 'correo'
+    REQUIRED_FIELDS = ['nombre']
 
     def __str__(self):
         return self.nombre
-

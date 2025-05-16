@@ -1,38 +1,35 @@
-from rest_framework import viewsets
-from .models import Usuario
-from .serializer import UsuarioSerializer
-from rest_framework.views import APIView
+from rest_framework import viewsets, status
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth.hashers import check_password  # si vas a usar hashing
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import get_user_model
+from rest_framework.permissions import IsAuthenticated
+User = get_user_model()
 
-# Create your views here.
+from .serializer import UsuarioSerializer
+
+Usuario = get_user_model()
+
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
-    lookup_field = 'id'  
-    permission_classes = [IsAuthenticated]
-
-
+    lookup_field = 'id'
+    permission_classes = [IsAuthenticated]  # Podés cambiar a IsAuthenticated si no querés permitir crear desde frontend público
 
 class LoginView(APIView):
-     # Permitir acceso sin autenticación previa
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny]
+
     def post(self, request):
         correo = request.data.get('correo')
-        contraseña = request.data.get('contraseña')
-        # Aquí es donde validarías las credenciales, si usas el modelo Usuario
+        password = request.data.get('password')
+
         try:
             user = Usuario.objects.get(correo=correo)
-            if user.contraseña == contraseña:  # Asegúrate de encriptar las contraseñas en producción
+            if user.check_password(password):  # Verifica hash
                 refresh = RefreshToken.for_user(user)
-                access_token = str(refresh.access_token)
-                
                 return Response({
-                    "access": access_token,
+                    "access": str(refresh.access_token),
                     "usuario": {
                         "id": user.id,
                         "nombre": user.nombre,
@@ -44,4 +41,3 @@ class LoginView(APIView):
                 return Response({"detail": "Credenciales incorrectas"}, status=status.HTTP_400_BAD_REQUEST)
         except Usuario.DoesNotExist:
             return Response({"detail": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
-        

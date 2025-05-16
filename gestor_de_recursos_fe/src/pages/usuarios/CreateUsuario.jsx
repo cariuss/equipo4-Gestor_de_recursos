@@ -63,7 +63,7 @@ const CreateUsuario = () => {
           />
           <input
             id="contraseña"
-            name="contraseña" // antes era "password"
+            name="password" // antes era "password"
             type="password"
             placeholder="Contraseña"
             className="w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 text-gray-700"

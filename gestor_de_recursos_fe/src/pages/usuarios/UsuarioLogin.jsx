@@ -1,23 +1,46 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {Modal} from "../../components/Modal"
 
-const UsuarioLogin = () => {
+export const UsuarioLogin = () => {
   const [correo, setCorreo] = useState("");
   const [contraseña, setContraseña] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalProps, setModalProps] = useState({}); // para el mensaje e icono
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault(correo, contraseña);
     const res = await fetch("http://localhost:8000/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ correo, contraseña }),
+      body: JSON.stringify({ correo, password: contraseña }),
     });
     const data = await res.json();
-    if (res.ok) {
-      localStorage.setItem("token", data.access);
-      alert("Login exitoso");
-      
-    } else {
-      alert(data.detail || "Error al iniciar sesión");
+   if (res.ok) {
+  localStorage.setItem("token", data.access);
+  localStorage.setItem("usuario", JSON.stringify(data.usuario)); // <-- Guardamos usuario completo
+
+  setModalProps({
+    title: "Inicio de sesión exitoso",
+    text: "Bienvenido a la plataforma",
+    icon: "success",
+    confirmButtonText: "Continuar",
+    onConfirm: () => {
+      setIsModalOpen(false);
+      navigate("/list_recursos");
+    },
+  });
+  setIsModalOpen(true);
+} else {
+      setModalProps({
+        title: "Error",
+        text: data.detail || "Credenciales incorrectas",
+        icon: "error",
+        confirmButtonText: "Intentar de nuevo",
+        onConfirm: () => setIsModalOpen(false),
+      });
+      setIsModalOpen(true);
     }
   };
 
@@ -76,6 +99,11 @@ const UsuarioLogin = () => {
           Iniciar Sesión
         </button>
       </form>
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        {...modalProps}
+      />
     </div>
   );
 };

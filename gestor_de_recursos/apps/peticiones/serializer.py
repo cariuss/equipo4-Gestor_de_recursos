@@ -3,9 +3,10 @@ from rest_framework import serializers
 from django.contrib.auth.models import User
 
 
-class PeticionSerializer(serializers.ModelSerializer):  # Para serializar un modelo completo
+class PeticionSerializer(serializers.ModelSerializer):
     class Meta:
         model = SolicitudRecurso
-        # fields = ['usuario', 'recurso', 'cantidad_solicitada']
-        fields = '__all__'  # Para serializar todos los campos del modelo
-        
+        fields = '__all__'
+        extra_kwargs = {
+            'usuario': {'required': False},  # se asigna automáticamente
+        }

@@ -31,10 +31,13 @@ ALLOWED_HOSTS = []
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly' #permisos para la api
-        
-    ]
+     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "apps.usuarios.authentication.CustomJWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+
 }
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -45,11 +48,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.recursos', 
     'apps.peticiones',
+    'apps.usuarios',
     'rest_framework',
     'drf_yasg',
     'rest_framework_simplejwt',
      'corsheaders',     
-    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -113,6 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'usuarios.Usuario'
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
@@ -138,5 +142,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000", # React app
-    "http://localhost:5174" # Vite app
+    "http://localhost:5174", # Vite app
+    "http://localhost:5173"
 ]

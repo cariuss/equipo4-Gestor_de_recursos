@@ -1,9 +1,10 @@
 from django.db import models
 from apps.recursos.models import Recurso
 from django.contrib.auth.models import User
+from django.conf import settings
 
 class SolicitudRecurso(models.Model):
-    usuario = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Usuario Solicitante")
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     recurso = models.ForeignKey(Recurso, on_delete=models.CASCADE, verbose_name="Recurso Solicitado")
     cantidad_solicitada = models.IntegerField(default=1, verbose_name="Cantidad Solicitada")
     fecha_solicitud = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Solicitud")

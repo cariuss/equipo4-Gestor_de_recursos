@@ -1,22 +1,55 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import {CreateRecurso} from "./pages/CreateRecurso";
-import {ListRecursos} from "./pages/ListRecursos";
+import { ListUsuario } from "./pages/usuarios/ListUsuario";
+import { ListRecursos } from "./pages/ListRecursos";
+import { ListPeticiones } from "./pages/peticiones/ListPeticiones";
+import UsuarioLogin from "./pages/usuarios/UsuarioLogin";
+import PrivateRoute from "./routes/PrivateRoutes";
+import PrivateLayout from "./layouts/PrivateLayout";
 import "./App.css";
-import UpdateRecurso from "./pages/UpdateRecurso";
+
 function App() {
-
-
   return (
-    
     <BrowserRouter>
       <Routes>
-        <Route path="/crear_recurso" element={<CreateRecurso/>} />
-        <Route path="/list_recurso" element={<ListRecursos/>} />
-        {/* <Route path="/update_recurso" element={<UpdateRecurso/>} /> */}
+        {/* Ruta pública: Login */}
+        <Route path="/" element={<UsuarioLogin />} />
+
+        {/* Ruta privada: Usuarios */}
+        <Route
+          path="/list_usuarios"
+          element={
+            <PrivateRoute roles={["administrador"]}>
+              <PrivateLayout>
+                <ListUsuario />
+              </PrivateLayout>
+            </PrivateRoute>
+          }
+        />
+
+        {/* Ruta privada: Recursos */}
+        <Route
+          path="/list_recursos"
+          element={
+            <PrivateRoute roles={["administrador"]}>
+              <PrivateLayout>
+                <ListRecursos />
+              </PrivateLayout>
+            </PrivateRoute>
+          }
+        />
+         <Route
+          path="/list_peticiones"
+          element={
+            <PrivateRoute roles={["administrador"]}>
+              <PrivateLayout>
+                <ListPeticiones />
+              </PrivateLayout>
+            </PrivateRoute>
+          }
+        />
       </Routes>
-  </BrowserRouter>
-    
-  )
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
