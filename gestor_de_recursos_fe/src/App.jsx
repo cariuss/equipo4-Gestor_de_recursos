@@ -37,10 +37,10 @@ function App() {
             </PrivateRoute>
           }
         />
-         <Route
+        <Route
           path="/list_peticiones"
           element={
-            <PrivateRoute roles={["administrador"]}>
+            <PrivateRoute roles={["administrador", "usuario_estandar"]}>
               <PrivateLayout>
                 <ListPeticiones />
               </PrivateLayout>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {Modal} from "../../components/Modal"
+import { Modal } from "../../components/Modal"
 
 export const UsuarioLogin = () => {
   const [correo, setCorreo] = useState("");
@@ -17,22 +17,22 @@ export const UsuarioLogin = () => {
       body: JSON.stringify({ correo, password: contraseña }),
     });
     const data = await res.json();
-   if (res.ok) {
-  localStorage.setItem("token", data.access);
-  localStorage.setItem("usuario", JSON.stringify(data.usuario)); // <-- Guardamos usuario completo
+    if (res.ok) {
+      localStorage.setItem("token", data.access);
+      localStorage.setItem("usuario", JSON.stringify(data.usuario)); // <-- Guardamos usuario completo
 
-  setModalProps({
-    title: "Inicio de sesión exitoso",
-    text: "Bienvenido a la plataforma",
-    icon: "success",
-    confirmButtonText: "Continuar",
-    onConfirm: () => {
-      setIsModalOpen(false);
-      navigate("/list_recursos");
-    },
-  });
-  setIsModalOpen(true);
-} else {
+      setModalProps({
+        title: "Inicio de sesión exitoso",
+        text: "Bienvenido a la plataforma",
+        icon: "success",
+        confirmButtonText: "Continuar",
+        onConfirm: () => {
+          setIsModalOpen(false);
+          navigate("/list_peticiones");
+        },
+      });
+      setIsModalOpen(true);
+    } else {
       setModalProps({
         title: "Error",
         text: data.detail || "Credenciales incorrectas",
