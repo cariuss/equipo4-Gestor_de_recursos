@@ -145,8 +145,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React app
-    "http://localhost:5174",  # Vite app
-    "http://localhost:5173",
+    "https://equipo4-gestor-de-recursos.vercel.app",
 ]
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ["https://*.ngrok-free.app"]
+CORS_ALLOW_ALL_ORIGINS = True
