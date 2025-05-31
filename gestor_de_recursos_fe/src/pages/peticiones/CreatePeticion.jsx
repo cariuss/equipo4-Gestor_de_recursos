@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { createPeticion } from "../../services/peticiones.service";
 
 const CreatePeticion = ({ onSubmit, onCancel }) => {
-  console.log("Token:", localStorage.getItem("token"));
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
     const formData = new FormData(e.target);
     const data = {
       recurso: formData.get("recurso"),
@@ -12,21 +15,21 @@ const CreatePeticion = ({ onSubmit, onCancel }) => {
       fecha_entrega_esperada: formData.get("fecha_entrega_esperada"),
       fecha_devolucion_esperada: formData.get("fecha_devolucion_esperada"),
       notas: formData.get("notas"),
-    };  
-    console.log("Datos enviados a backend (sin usuario):", data);
+    };
 
     try {
       await createPeticion(data);
-      onSubmit(); // Recarga la lista
+      onSubmit();
     } catch (error) {
       console.error("Error creando petición:", error);
-      alert("Hubo un error al crear la petición.");
+      alert("Hubo un error al crear la petición. Revisa la consola para más detalles.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="p-4 space-y-4">
-      {/* usuario ha sido eliminado del formulario */}
       <input
         type="text"
         name="recurso"
@@ -62,9 +65,10 @@ const CreatePeticion = ({ onSubmit, onCancel }) => {
       <div className="flex justify-end gap-2">
         <button
           type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          disabled={isSubmitting}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:bg-blue-300"
         >
-          Crear
+          {isSubmitting ? "Creando..." : "Crear"}
         </button>
         <button
           type="button"

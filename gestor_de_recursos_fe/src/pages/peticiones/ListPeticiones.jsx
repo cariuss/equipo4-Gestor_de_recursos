@@ -19,8 +19,13 @@ export const ListPeticiones = () => {
   const currentItems = peticiones.slice(offset, offset + itemsPerPage);
 
   const fetchPeticiones = async () => {
-    const data = await getPeticiones();
-    setPeticiones(data);
+    try {
+      const data = await getPeticiones();
+      setPeticiones(data);
+    } catch (error) {
+      console.error("Error al cargar peticiones:", error);
+      setPeticiones([]);  // Evita que se rompa la UI
+    }
   };
 
   useEffect(() => {
@@ -48,9 +53,14 @@ export const ListPeticiones = () => {
 
   const handleDelete = async () => {
     if (peticionToDeleteId) {
-      await deletePeticion(peticionToDeleteId);
-      await fetchPeticiones();
-      closeDeleteModal();
+      try {
+        await deletePeticion(peticionToDeleteId);
+        await fetchPeticiones();
+      } catch (error) {
+        console.error("Error al eliminar la petición:", error);
+      } finally {
+        closeDeleteModal();
+      }
     }
   };
 
@@ -78,7 +88,7 @@ export const ListPeticiones = () => {
             </tr>
           </thead>
           <tbody>
-            {currentItems.map((p) => (
+            {currentItems.length ? currentItems.map((p) => (
               <tr key={p.id} className="text-center border-b">
                 <td className="px-4 py-2">{p.usuario}</td>
                 <td className="px-4 py-2">{p.recurso}</td>
@@ -99,7 +109,13 @@ export const ListPeticiones = () => {
                   </button>
                 </td>
               </tr>
-            ))}
+            )) : (
+              <tr>
+                <td colSpan={5} className="px-4 py-2 text-center">
+                  No hay peticiones disponibles.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
@@ -139,4 +155,4 @@ export const ListPeticiones = () => {
   );
 };
 
-
+export default ListPeticiones;
