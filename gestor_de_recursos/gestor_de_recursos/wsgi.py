@@ -15,3 +15,4 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'gestor_de_recursos.settings')
 
 application = get_wsgi_application()
 application = get_wsgi_application()
+app = application
