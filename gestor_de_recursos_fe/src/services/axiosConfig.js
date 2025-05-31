@@ -1,18 +1,26 @@
-// api.js (modificado temporalmente)
+// axiosConfig.js
 import axios from "axios";
 
+const getTokenSafe = () => {
+  try {
+    return localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+  } catch (error) {
+    console.warn("localStorage/sessionStorage no accesible:", error);
+    return "";
+  }
+};
+
 const api = axios.create({
-  baseURL: "https://ae42-190-121-129-147.ngrok-free.app/"
+  baseURL: "https://8e19-190-121-129-147.ngrok-free.app"
 });
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
-    console.log("TOKEN:", token); // Validar que el token existe y se loguea
+    const token = getTokenSafe();
+    console.log("TOKEN desde interceptor Axios:", token);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    console.log("HEADERS:", config.headers); // Verifica que Authorization se agregue
     return config;
   },
   (error) => Promise.reject(error)
